@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Algorithm Quest</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700;900&display=swap');
+:root{--bg:#0a0e1a;--surface:#121829;--surface2:#1a2240;--text:#e0e6f0;--dim:#6b7a99;--neon:#00e5ff;--neon-glow:0 0 12px rgba(0,229,255,.4);--gold:#ffd700;--gold-glow:0 0 12px rgba(255,215,0,.4);--xp-green:#00ff88;--xp-glow:0 0 10px rgba(0,255,136,.35);--danger:#ff4757;--danger-glow:0 0 10px rgba(255,71,87,.4);--success:#00ff88;--card-border:rgba(0,229,255,.15);--pixel:'Press Start 2P',monospace}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.6 Inter,system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(0,229,255,.06),transparent 70%);pointer-events:none;z-index:0}
+
+.hud{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:16px;padding:10px 24px;background:rgba(10,14,26,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border)}
+.hud-brand{font-family:var(--pixel);font-size:11px;color:var(--neon);text-shadow:var(--neon-glow);white-space:nowrap}
+.hud-stats{display:flex;gap:18px;margin-left:auto;align-items:center;font-size:13px;font-weight:700}
+.stat{display:flex;align-items:center;gap:5px}
+.stat .icon{font-size:16px}
+.stat-xp{color:var(--xp-green);text-shadow:var(--xp-glow)}
+.stat-streak{color:var(--gold);text-shadow:var(--gold-glow)}
+.stat-lives{color:var(--danger)}
+.stat-level{color:var(--neon);text-shadow:var(--neon-glow)}
+
+.xp-track{flex:1;max-width:260px;height:8px;background:rgba(255,255,255,.06);border-radius:20px;overflow:hidden;position:relative}
+.xp-fill{height:100%;width:0;background:linear-gradient(90deg,var(--xp-green),var(--neon));border-radius:20px;transition:width .5s cubic-bezier(.22,1,.36,1);box-shadow:var(--xp-glow)}
+
+.app{display:grid;grid-template-columns:72px 1fr;min-height:calc(100vh - 49px);position:relative;z-index:1}
+
+.rail{background:var(--surface);border-right:1px solid var(--card-border);padding:12px 0;display:flex;flex-direction:column;align-items:center;gap:4px;overflow-y:auto;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.node{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.08);background:var(--surface2);display:grid;place-items:center;cursor:pointer;font-family:var(--pixel);font-size:10px;color:var(--dim);transition:.2s;position:relative}
+.node:hover{border-color:var(--neon);color:var(--text);transform:scale(1.12)}
+.node.active{border-color:var(--neon);color:var(--neon);box-shadow:var(--neon-glow);background:rgba(0,229,255,.08)}
+.node.done{border-color:var(--xp-green);color:var(--bg);background:var(--xp-green);box-shadow:var(--xp-glow)}
+.node.done::after{content:'\2713';font-family:Inter;font-size:16px;font-weight:900}
+.node.done span{display:none}
+.connector{width:2px;height:12px;background:rgba(255,255,255,.08);border-radius:2px}
+.connector.done{background:var(--xp-green);box-shadow:var(--xp-glow)}
+
+.stage-area{padding:36px 40px 80px;max-width:860px;width:100%;margin:0 auto}
+
+.level-badge{display:inline-flex;align-items:center;gap:8px;padding:4px 14px 4px 8px;background:rgba(0,229,255,.08);border:1px solid var(--card-border);border-radius:20px;font-family:var(--pixel);font-size:9px;color:var(--neon);text-shadow:var(--neon-glow);margin-bottom:12px}
+.level-badge .diamond{font-size:14px}
+.quest-title{font-size:30px;font-weight:900;line-height:1.2;margin-bottom:4px}
+.quest-stage{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;color:var(--dim);margin-bottom:28px}
+.quest-counter{font-size:12px;color:var(--dim);padding:5px 12px;border:1px solid rgba(255,255,255,.08);border-radius:10px;float:right;margin-top:4px}
+
+.card{background:var(--surface);border:1px solid var(--card-border);border-radius:16px;padding:26px;margin-bottom:20px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:.5}
+.card-label{font-family:var(--pixel);font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:var(--neon);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card-label::before{content:'';width:6px;height:6px;background:var(--neon);border-radius:50%;box-shadow:var(--neon-glow)}
+.teaching{font-size:16px;line-height:1.7;color:#b8c5d9}
+.teaching em{color:var(--neon);font-style:normal}
+.teaching code{background:rgba(0,229,255,.08);color:var(--neon);padding:2px 6px;border-radius:4px;font-size:13px}
+
+.challenge{border-color:rgba(255,215,0,.2)}
+.challenge::before{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.challenge .card-label{color:var(--gold)}
+.challenge .card-label::before{background:var(--gold);box-shadow:var(--gold-glow)}
+.quest-prompt{font-size:18px;font-weight:600;line-height:1.5;margin-bottom:20px;color:var(--text)}
+
+.option{width:100%;text-align:left;background:var(--surface2);color:var(--text);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;margin:7px 0;cursor:pointer;transition:all .2s;font:14px/1.5 Inter,system-ui;position:relative;overflow:hidden}
+.option::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,229,255,.05),transparent);opacity:0;transition:.2s}
+.option:hover{border-color:var(--neon);transform:translateX(4px);box-shadow:var(--neon-glow)}.option:hover::before{opacity:1}
+.option:disabled{cursor:default;transform:none!important;box-shadow:none!important}
+.option.correct{border-color:var(--success);background:rgba(0,255,136,.06);box-shadow:0 0 20px rgba(0,255,136,.15)}
+.option.correct::after{content:'+10 XP';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:var(--pixel);font-size:8px;color:var(--xp-green);text-shadow:var(--xp-glow)}
+.option.wrong{border-color:var(--danger);background:rgba(255,71,87,.06);box-shadow:var(--danger-glow)}
+.option.wrong::after{content:'\2715';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--danger)}
+
+.feedback{display:none;margin-top:18px;padding:16px;border-radius:12px;background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15)}
+.feedback.show{display:block;animation:slideUp .3s ease}
+.feedback.wrong{background:rgba(255,71,87,.04);border-color:rgba(255,71,87,.15)}
+.feedback strong{color:var(--success);font-family:var(--pixel);font-size:10px;display:block;margin-bottom:6px}
+.feedback.wrong strong{color:var(--danger)}
+.explain{color:#8a9bb5;font-size:14px;line-height:1.6}
+
+.actions{display:flex;justify-content:space-between;margin-top:24px;gap:10px}
+.btn{padding:10px 22px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:var(--surface2);color:var(--dim);font:600 13px Inter;cursor:pointer;transition:.2s}
+.btn:hover:not(:disabled){border-color:var(--neon);color:var(--text)}
+.btn:disabled{opacity:.3;cursor:default}
+.btn.primary{background:linear-gradient(135deg,rgba(0,229,255,.15),rgba(0,255,136,.1));border-color:var(--neon);color:var(--neon);text-shadow:var(--neon-glow)}
+.btn.primary:hover:not(:disabled){background:linear-gradient(135deg,rgba(0,229,255,.25),rgba(0,255,136,.18));box-shadow:var(--neon-glow)}
+
+.combo-popup{position:fixed;top:60px;left:50%;transform:translateX(-50%);font-family:var(--pixel);font-size:14px;padding:10px 28px;border-radius:12px;z-index:200;pointer-events:none;opacity:0;transition:opacity .3s,transform .3s}
+.combo-popup.show{opacity:1;animation:popIn .4s ease}
+.combo-popup.good{color:var(--xp-green);background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.25);text-shadow:var(--xp-glow)}
+.combo-popup.bad{color:var(--danger);background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.25);text-shadow:var(--danger-glow)}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{transform:translateX(-50%) scale(.7);opacity:0}50%{transform:translateX(-50%) scale(1.15)}100%{transform:translateX(-50%) scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes glow-pulse{0%,100%{box-shadow:var(--neon-glow)}50%{box-shadow:0 0 24px rgba(0,229,255,.6)}}
+.shake{animation:shake .4s ease}
+
+@media(max-width:700px){
+  .app{grid-template-columns:1fr}.rail{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--card-border);padding:8px 12px}
+  .connector{width:12px;height:2px}.stage-area{padding:24px 16px 60px}.quest-title{font-size:22px}
+  .hud{flex-wrap:wrap;gap:8px;padding:8px 14px}.hud-brand{font-size:9px}.xp-track{max-width:160px}
+}
+
+.victory{text-align:center;padding:60px 20px}
+.victory .trophy{font-size:72px;margin-bottom:20px}
+.victory h2{font-family:var(--pixel);font-size:16px;color:var(--gold);text-shadow:var(--gold-glow);margin-bottom:12px}
+.victory p{color:var(--dim);font-size:15px}
+.victory .final-score{font-family:var(--pixel);font-size:28px;color:var(--xp-green);text-shadow:var(--xp-glow);margin:20px 0}
+</style>
+</head>
+<body>
+
+<header class="hud">
+  <div class="hud-brand">ALGORITHM QUEST</div>
+  <div class="xp-track"><div id="xpFill" class="xp-fill"></div></div>
+  <div class="hud-stats">
+    <div class="stat stat-xp"><span class="icon">&#10022;</span> <span id="xpText">0 XP</span></div>
+    <div class="stat stat-streak"><span class="icon">&#128293;</span> <span id="streakText">0</span></div>
+    <div class="stat stat-lives"><span class="icon">&#9829;</span> <span id="livesText">3</span></div>
+    <div class="stat stat-level"><span class="icon">&#9670;</span> LV <span id="levelText">1</span></div>
+  </div>
+</header>
+
+<div class="app">
+  <nav id="rail" class="rail"></nav>
+  <main class="stage-area"><div id="content"></div></main>
+</div>
+
+<div id="comboPopup" class="combo-popup"></div>
+
+<script>
+const LESSONS=[{"lesson_number":1,"arc_stage":"problem_framing","teaching_content":"The task: given an array of integers, decide whether any value shows up more than once. You don\u2019t need to know *which* value repeats or *where* \u2014 just whether at least one repeat exists anywhere in the array, in any order.","question":{"type":"spot_the_flaw","prompt":"A learner says: \u2018I\u2019ll just check whether nums[i] equals nums[i+1] for every i \u2014 if any adjacent pair matches, return true.\u2019 What\u2019s wrong with this reasoning?","options":["It only catches duplicates that happen to sit next to each other; duplicates elsewhere in the array (e.g. nums[0] and nums[5]) would be missed unless the array is sorted first","It\u2019s actually correct as written for any input array","It\u2019s too slow because it checks every adjacent pair","It fails only when the array has exactly one element"],"correct_answer":"It only catches duplicates that happen to sit next to each other; duplicates elsewhere in the array (e.g. nums[0] and nums[5]) would be missed unless the array is sorted first","explanation":"Duplicates can be anywhere in the array, not just next to each other. Checking only adjacent pairs silently misses valid duplicates unless you\u2019ve first imposed an order (like sorting) that guarantees equal values become adjacent."}},{"lesson_number":2,"arc_stage":"pattern_recognition","teaching_content":"The key signal here is the phrase \u2018have I seen this value before?\u2019 Whenever a problem asks about existence or repetition of elements without caring about their position, that\u2019s a strong cue for a hashing pattern \u2014 using a hash set to remember what\u2019s already been encountered.","question":{"type":"pattern_mcq","prompt":"Which pattern most directly fits \u2018determine if any value appears more than once\u2019?","options":["Hashing / seen-before tracking with a set","Two pointers converging from both ends","Dynamic programming over subarrays","Binary search on the array"],"correct_answer":"Hashing / seen-before tracking with a set","explanation":"The problem is fundamentally about membership and repetition, not order or position, which is exactly what hash-based \u2018have I seen this before\u2019 tracking is built for."}},{"lesson_number":3,"arc_stage":"brute_force","teaching_content":"The naive approach: for every element, compare it against every other element in the array, looking for a match. If any pair matches, return true; if you finish checking all pairs with no match, return false.","question":{"type":"order_steps","prompt":"Put these steps of the brute-force approach in the correct order.","options":["1) For each index i, loop over each index j > i. 2) Compare nums[i] and nums[j]. 3) If they\u2019re equal, return true immediately. 4) If no pair ever matches after all comparisons, return false.","1) Sort the array. 2) Compare each element to the next. 3) Return true on first match.","1) Return false. 2) Loop over all pairs. 3) Compare each pair.","1) Compare nums[i] and nums[j] for a single fixed i and j. 2) Return the result immediately without checking other pairs."],"correct_answer":"1) For each index i, loop over each index j > i. 2) Compare nums[i] and nums[j]. 3) If they\u2019re equal, return true immediately. 4) If no pair ever matches after all comparisons, return false.","explanation":"Brute force means exhaustively checking every distinct pair (i, j) with j > i, short-circuiting to true on the first match, and only returning false after confirming no pair anywhere matches."}},{"lesson_number":4,"arc_stage":"why_brute_force_falls_short","teaching_content":"Comparing every pair means roughly n(n-1)/2 comparisons for an array of length n. As n grows into the tens of thousands or more, this becomes far too slow, even though the underlying question (\u2018has this value appeared before?\u2019) can be answered in constant time per element with the right data structure.","question":{"type":"complexity_mcq","prompt":"What is the time complexity of the brute-force pairwise comparison approach?","options":["O(n^2)","O(n log n)","O(n)","O(log n)"],"correct_answer":"O(n^2)","explanation":"Checking every pair of elements requires on the order of n^2 comparisons, since for each of the n elements you potentially compare against all remaining elements."}},{"lesson_number":5,"arc_stage":"approach","approach_name":"sorting","teaching_content":"Sort the array first. Once sorted, any duplicate values are guaranteed to end up adjacent to each other. Then a single pass comparing each element to its neighbor is enough to detect a duplicate.","question":{"type":"order_steps","prompt":"Order the steps of the sorting approach correctly.","options":["1) Sort the array in place. 2) Walk through the sorted array comparing nums[i] to nums[i-1]. 3) If any adjacent pair is equal, return true. 4) If the loop finishes with no match, return false.","1) Walk through the array comparing nums[i] to nums[i-1]. 2) Sort the array. 3) Return true if any pair matched.","1) Sort the array. 2) Return true immediately since duplicates always exist after sorting.","1) Compare first and last elements. 2) Sort the array. 3) Return the comparison result."],"correct_answer":"1) Sort the array in place. 2) Walk through the sorted array comparing nums[i] to nums[i-1]. 3) If any adjacent pair is equal, return true. 4) If the loop finishes with no match, return false.","explanation":"Sorting must happen first so that equal values become neighbors; only then does a single adjacent-pair scan reliably catch every duplicate."}},{"lesson_number":6,"arc_stage":"approach","approach_name":"sorting","teaching_content":"Sorting itself typically costs O(n log n) time, and the adjacent-comparison pass afterward is O(n). The sort dominates, so the overall time is O(n log n). Space usage depends on the sort implementation, but can often be done with little extra memory beyond the input.","question":{"type":"complexity_mcq","prompt":"What is the overall time complexity of the sorting approach?","options":["O(n log n)","O(n^2)","O(n)","O(1)"],"correct_answer":"O(n log n)","explanation":"The single linear pass to check adjacent elements is cheap compared to the sort itself, so sorting\u2019s O(n log n) cost determines the overall complexity."}},{"lesson_number":7,"arc_stage":"approach","approach_name":"hash set","teaching_content":"Walk through the array once, keeping a set of values seen so far. For each element, check if it\u2019s already in the set \u2014 if so, return true. Otherwise, add it to the set and continue. If you reach the end without a match, return false.","question":{"type":"order_steps","prompt":"Order the steps of the hash set approach correctly.","options":["1) Create an empty set. 2) For each element, check if it\u2019s already in the set. 3) If yes, return true. 4) If no, add it to the set and move to the next element. 5) If the loop finishes, return false.","1) Create an empty set. 2) Add every element to the set first. 3) Check the set\u2019s size against the array\u2019s length.","1) Sort the array. 2) Add elements to a set one at a time. 3) Return true if the set is empty.","1) For each element, add it to the set. 2) Then check whether it was already there before adding."],"correct_answer":"1) Create an empty set. 2) For each element, check if it\u2019s already in the set. 3) If yes, return true. 4) If no, add it to the set and move to the next element. 5) If the loop finishes, return false.","explanation":"The check must happen before the add for each element \u2014 otherwise every element would trivially \u2018already be in the set\u2019 right after you insert it, breaking the logic."}},{"lesson_number":8,"arc_stage":"approach","approach_name":"hash set","teaching_content":"Each set lookup and insertion takes expected O(1) time, and you do this once per element, giving O(n) overall time. The tradeoff is space: in the worst case (no duplicates at all), the set grows to hold all n elements, costing O(n) extra space.","question":{"type":"complexity_mcq","prompt":"What are the time and space complexities of the hash set approach?","options":["O(n) time, O(n) space","O(n log n) time, O(1) space","O(n^2) time, O(n) space","O(n) time, O(1) space"],"correct_answer":"O(n) time, O(n) space","explanation":"A single pass with constant-time expected set operations gives O(n) time, but in the worst case (all unique values) the set must hold every element, costing O(n) space."}},{"lesson_number":9,"arc_stage":"tradeoffs","teaching_content":"Sorting and hash set differ along the classic time-vs-space axis: sorting runs in O(n log n) time but can often use O(1) extra space (or O(log n) for the sort\u2019s own overhead), while the hash set approach runs faster at O(n) time but needs O(n) extra space to store seen values.","question":{"type":"tradeoff_compare","prompt":"Memory is extremely constrained (e.g. an embedded device with very limited RAM), but you can afford to modify the input array and take a bit more time. Which approach fits better, and why?","options":["Sorting \u2014 it can be done with little to no extra memory beyond the input array, trading some time for low space usage","Hash set \u2014 it\u2019s always the better choice regardless of memory constraints","Brute force \u2014 it uses no extra data structures, so it\u2019s automatically the most memory-efficient and should be preferred here","Neither approach is affected by memory constraints"],"correct_answer":"Sorting \u2014 it can be done with little to no extra memory beyond the input array, trading some time for low space usage","explanation":"Sorting in place trades a bit of extra time (O(n log n) instead of O(n)) for dramatically lower memory usage, which is the right call when RAM is the binding constraint. Brute force, while memory-light, is a poor choice here because it\u2019s asymptotically slower (O(n^2)) with no space benefit over sorting."}},{"lesson_number":10,"arc_stage":"transfer_check","teaching_content":"The \u2018seen-before\u2019 hashing pattern shows up whenever a problem asks about existence or repetition without caring about order \u2014 for example, checking if a duplicate exists within a sliding window of the last k elements (\u2018Contains Duplicate II\u2019), or finding two numbers that sum to a target (\u2018Two Sum\u2019). In both cases, a hash structure lets you check membership in O(1) instead of rescanning.","question":{"type":"pattern_mcq","prompt":"A problem asks: \u2018Given an array and an integer k, determine if there are two equal elements whose indices differ by at most k.\u2019 Which pattern extends naturally from this lesson to solve it?","options":["Hash set (or hash map tracking last-seen index), sliding along the array and evicting entries that fall outside the window of size k","Sorting the entire array first","Two pointers starting from opposite ends of the array","Binary search for each element"],"correct_answer":"Hash set (or hash map tracking last-seen index), sliding along the array and evicting entries that fall outside the window of size k","explanation":"This is \u2018Contains Duplicate II\u2019 \u2014 the same seen-before hashing idea applies, but now paired with a sliding window so only recently seen values (within distance k) count as duplicates. Sorting would destroy the index information needed to check the distance constraint."}},{"lesson_number":11,"arc_stage":"transfer_check","teaching_content":"Sometimes sorting is the better transferable pattern instead of hashing \u2014 particularly when a problem needs elements in relative order, not just membership. For example, finding all duplicates while also reporting them in sorted order, or problems involving ranges/closeness between values (like values within a numeric distance of each other, not just exact matches) often lean on sorting rather than a plain hash set.","question":{"type":"pattern_mcq","prompt":"A problem asks: \u2018Determine if there are two elements whose values differ by at most t, and whose indices differ by at most k\u2019 (values can be close, not just exactly equal). Which pattern is the better fit compared to a plain hash set?","options":["A sorted/bucketed structure (e.g. sorting or bucketing values) that can efficiently find \u2018nearby\u2019 values, since a plain hash set only detects exact matches","A plain hash set, since it already solves problems about closeness in value","Brute force is always required once \u2018closeness\u2019 is involved","Two pointers alone, without any sorting or bucketing"],"correct_answer":"A sorted/bucketed structure (e.g. sorting or bucketing values) that can efficiently find \u2018nearby\u2019 values, since a plain hash set only detects exact matches","explanation":"A hash set answers \u2018have I seen exactly this value?\u2019 but can\u2019t efficiently answer \u2018have I seen a value close to this one?\u2019. Problems involving numeric closeness (like \u2018Contains Duplicate III\u2019) typically need sorting, bucketing, or an ordered structure instead of plain hashing \u2014 recognizing when the pattern from earlier lessons no longer applies is part of the skill."}}];
+
+let current=0;
+const completed=new Set();
+let xp=0,streak=0,lives=3;
+const XP_PER_CORRECT=10,STREAK_BONUS=5;
+const MAX_XP=LESSONS.length*(XP_PER_CORRECT+STREAK_BONUS);
+const $=id=>document.getElementById(id);
+
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
+function formatText(s){return esc(s).replace(/\*([^*]+)\*/g,"<em>$1</em>").replace(/`([^`]+)`/g,"<code>$1</code>");}
+function stageTitle(s){return s.replaceAll("_"," ").replace(/\b\w/g,x=>x.toUpperCase());}
+
+function updateHUD(){
+  $("xpText").textContent=xp+" XP";
+  $("streakText").textContent=streak;
+  var h="";for(var i=0;i<Math.max(0,lives);i++) h+="\u2665";
+  $("livesText").textContent=h||"0";
+  $("levelText").textContent=Math.floor(xp/30)+1;
+  $("xpFill").style.width=(xp/MAX_XP*100)+"%";
+}
+
+function showPopup(text,type){
+  var el=$("comboPopup");
+  el.textContent=text;
+  el.className="combo-popup show "+type;
+  clearTimeout(el._t);
+  el._t=setTimeout(function(){el.className="combo-popup";},1800);
+}
+
+function renderRail(){
+  var rail=$("rail");
+  rail.innerHTML=LESSONS.map(function(l,i){
+    var done=completed.has(i),active=i===current;
+    var cls=done?"done":active?"active":"";
+    var conn=i<LESSONS.length-1?"<div class=\"connector"+(completed.has(i)?" done":"")+"\"></div>":"";
+    return "<div class=\"node "+cls+"\" onclick=\"go("+i+")\" title=\"Level "+l.lesson_number+"\"><span>"+l.lesson_number+"</span></div>"+conn;
+  }).join("");
+}
+
+function go(i){current=i;renderRail();renderLesson();}
+
+function renderLesson(){
+  if(!LESSONS.length){$("content").innerHTML="<div class=\"victory\"><p>No lessons loaded.</p></div>";return;}
+  if(completed.size===LESSONS.length){
+    $("content").innerHTML="<div class=\"victory\"><div class=\"trophy\">\uD83C\uDFC6</div><h2>QUEST COMPLETE!</h2><div class=\"final-score\">"+xp+" XP</div><p>You conquered all "+LESSONS.length+" levels with "+lives+" "+(lives===1?"life":"lives")+" remaining.</p><p style=\"margin-top:12px;color:var(--dim)\">Best streak: "+streak+"</p><button class=\"btn primary\" style=\"margin-top:24px\" onclick=\"resetGame()\">Play Again</button></div>";
+    return;
+  }
+  var l=LESSONS[current],q=l.question;
+  var titleText=l.approach_name?l.approach_name:stageTitle(l.arc_stage);
+  $("content").innerHTML="<div style=\"display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px\"><div><div class=\"level-badge\"><span class=\"diamond\">\u25C6</span> LEVEL "+l.lesson_number+"</div><div class=\"quest-title\">"+esc(titleText)+"</div><div class=\"quest-stage\">"+esc(l.arc_stage)+"</div></div><div class=\"quest-counter\">"+(current+1)+" / "+LESSONS.length+"</div></div><section class=\"card\"><div class=\"card-label\">Intel Briefing</div><div class=\"teaching\">"+formatText(l.teaching_content)+"</div></section><section class=\"card challenge\"><div class=\"card-label\">\u2694 Challenge \u2014 "+esc(q.type.replaceAll("_"," "))+"</div><div class=\"quest-prompt\">"+formatText(q.prompt)+"</div><div id=\"options\"></div><div id=\"feedback\" class=\"feedback\"></div><div class=\"actions\"><button class=\"btn\" onclick=\"go(Math.max(0,current-1))\" "+(current===0?"disabled":""+"")+">\u2190 Prev</button><button class=\"btn primary\" id=\"nextBtn\" onclick=\"go(Math.min(LESSONS.length-1,current+1))\" "+(current===LESSONS.length-1?"disabled":""+"")+"  >Next \u2192</button></div></section>";
+  renderOptions(q);
+}
+
+function renderOptions(q){
+  var box=$("options");
+  q.options.forEach(function(opt,i){
+    var b=document.createElement("button");
+    b.className="option";b.textContent=opt;
+    b.onclick=function(){answer(i);};
+    box.appendChild(b);
+  });
+}
+
+function answer(i){
+  var q=LESSONS[current].question;
+  var buttons=[].slice.call(document.querySelectorAll(".option"));
+  var correct=q.options.indexOf(q.correct_answer);
+  var ok=i===correct;
+  buttons.forEach(function(b,idx){
+    b.disabled=true;
+    if(idx===correct) b.classList.add("correct");
+    if(idx===i&&idx!==correct) b.classList.add("wrong");
+  });
+  if(ok){
+    completed.add(current);streak++;
+    var bonus=streak>=3?STREAK_BONUS:0;
+    xp+=XP_PER_CORRECT+bonus;
+    if(streak>=3) showPopup("\uD83D\uDD25 "+streak+"\u00D7 STREAK! +"+(XP_PER_CORRECT+bonus)+" XP","good");
+    else showPopup("+"+XP_PER_CORRECT+" XP","good");
+  } else {
+    streak=0;lives=Math.max(0,lives-1);
+    showPopup("\u22121 \u2665","bad");
+    var ch=document.querySelector(".challenge");
+    if(ch){ch.classList.add("shake");setTimeout(function(){ch.classList.remove("shake");},400);}
+  }
+  var fb=$("feedback");
+  fb.className="feedback show "+(ok?"":"wrong");
+  fb.innerHTML="<strong>"+(ok?"\u2726 CORRECT!":"\u2715 WRONG ANSWER")+"</strong><div class=\"explain\">"+formatText(q.explanation)+"</div>";
+  updateHUD();renderRail();
+  if(ok&&current<LESSONS.length-1){var btn=$("nextBtn");if(btn) btn.style.animation="glow-pulse 1s infinite";}
+  if(completed.size===LESSONS.length) setTimeout(renderLesson,1200);
+}
+
+function resetGame(){completed.clear();xp=0;streak=0;lives=3;current=0;updateHUD();renderRail();renderLesson();}
+
+document.addEventListener("keydown",function(e){
+  if(e.key==="ArrowRight"&&current<LESSONS.length-1) go(current+1);
+  if(e.key==="ArrowLeft"&&current>0) go(current-1);
+});
+
+updateHUD();renderRail();renderLesson();
+</script>
+</body>
+</html>
