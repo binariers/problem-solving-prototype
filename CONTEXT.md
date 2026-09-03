@@ -31,16 +31,16 @@ _Avoid_: Generator, scraper
 The pipeline's output for one unit, named after the problem (e.g. `contains-duplicate/`). Contains `unit.json` plus one folder per lesson.
 
 **Lesson folder**:
-A folder inside a unit folder holding one lesson's definition file plus its resources (images and, when present, the lesson's supportive visual).
+A folder inside a unit folder holding one lesson's definition file plus its resources (images and any supportive visuals — lesson-level, per-option, or per-step).
 
 **Supportive visual**:
-A self-contained `viz.html` attached to a single answer option (or to an `info` lesson), loaded by the app in a sandboxed `<iframe>`. Fully standalone: it carries its own interactions and never communicates with the app — it exists purely to let the learner *explore* what that option means. Correctness is judged by the app from the selected option, not by the visual.
+A self-contained `viz.html`, loaded by the app in a sandboxed `<iframe>`, attached at any of three points: a **lesson-level default** (any lesson type may declare one, shown in the visualizing area by default), a **per-option** visual (`single-choice`/`multi-choice`), or a **per-step** visual (`order-steps`). Fully standalone: it carries its own interactions and never communicates with the app — it exists purely to let the learner *explore*. Correctness is judged by the app from the selected option, never by the visual.
 _Avoid_: Widget, embed, tier-1/tier-2 visual
 
 **Visualizing area**:
-The region of the lesson player that hosts the current supportive visual. Tapping an option loads that option's supportive visual here; the learner then plays with it in place.
+The region of the lesson player that hosts the current supportive visual. The lesson's default visual shows here on entry; tapping an option (or step) that has its own visual swaps it in here, reverting to the default when deselected.
 _Avoid_: Canvas, stage, viewport
 
 **Visualize-on-tap**:
-Tapping (not selecting) an answer option loads that option's supportive visual into the visualizing area, so the learner explores what the option means before committing. The core interaction of the app.
+Tapping (not selecting) an answer option loads that option's supportive visual into the visualizing area — in place of the lesson's default visual — so the learner explores what the option means before committing. The core interaction of the app.
 _Avoid_: Preview, hover

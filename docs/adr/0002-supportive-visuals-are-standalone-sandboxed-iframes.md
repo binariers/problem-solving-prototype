@@ -1,6 +1,6 @@
-# Supportive visuals are standalone, per-option `viz.html` files in sandboxed iframes
+# Supportive visuals are standalone `viz.html` files in sandboxed iframes
 
-Each answer option may carry its own optional, fully self-contained `viz.html`. Tapping an option loads *that option's* visual into the visualizing area via a sandboxed `<iframe>`. There is no app-native declarative visual renderer and no message protocol between the app and the visual: the app judges correctness solely from the selected option's `correct` flag, and the visual exists only to let the learner explore what an option means.
+A supportive visual is a fully self-contained `viz.html` loaded into the visualizing area via a sandboxed `<iframe>`. Visuals attach at any of three optional points: a **lesson-level default** (any lesson type may declare one, shown by default), a **per-option** visual (`single-choice`/`multi-choice`), and a **per-step** visual (`order-steps`); tapping an option or step swaps its visual in over the lesson default. There is no app-native declarative visual renderer and no message protocol between the app and the visual: the app judges correctness solely from the selected option's `correct` flag, and the visual exists only to let the learner explore an idea.
 
 ## Considered Options
 
@@ -9,4 +9,4 @@ Each answer option may carry its own optional, fully self-contained `viz.html`. 
 
 ## Consequences
 
-Visuals may be duplicated across options/lessons, and a rich multi-option lesson can imply several `viz.html` files; this authoring cost is accepted in exchange for total per-option flexibility and a dead-simple app. Visuals must be safe to sandbox (no dependence on app state or parent DOM).
+Visuals may be duplicated across lessons, options, and steps, and a rich lesson can imply several `viz.html` files; this authoring cost is accepted in exchange for total per-visual flexibility and a dead-simple app. Visuals must be safe to sandbox (no dependence on app state or parent DOM).
