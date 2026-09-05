@@ -1,4 +1,4 @@
-# Quests
+# Problem-Solving App
 
 A Duolingo-style mobile web app that teaches problem-solving by turning NeetCode problems into interactive, gamified learning content. Two parts: a **pipeline** that authors content, and a **web app** that plays it.
 
