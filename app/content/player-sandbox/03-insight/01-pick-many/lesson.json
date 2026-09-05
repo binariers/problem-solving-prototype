@@ -1,0 +1,11 @@
+{
+  "type": "multi-choice",
+  "prompt": "Select every data structure with average O(1) insertion.",
+  "visual": "default.html",
+  "options": [
+    { "id": "a", "text": "Hash set", "visual": "set.html", "correct": true },
+    { "id": "b", "text": "Hash map", "visual": "map.html", "correct": true },
+    { "id": "c", "text": "Sorted array", "correct": false }
+  ],
+  "explanation": "Hash set and hash map both average O(1) insertion. Toggle options to watch the visualizing area fall back to the most recently selected option that still has a visual, then to the default."
+}

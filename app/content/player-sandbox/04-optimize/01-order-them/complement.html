@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Complement</title>
+<style>
+  html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+  body { display: grid; place-items: center; background: #0f172a; color: #e2e8f0; text-align: center; }
+  .big { font-size: 30px; font-weight: 800; }
+  input { width: 64px; font-size: 18px; text-align: center; }
+</style>
+</head>
+<body>
+  <div>
+    <p>target 10 − <input id="n" type="number" value="3" /> = <span class="big" id="out">7</span></p>
+    <p>Tap the step to see its complement idea.</p>
+  </div>
+  <script>
+    const n = document.getElementById('n');
+    const out = document.getElementById('out');
+    n.addEventListener('input', () => { out.textContent = 10 - (Number(n.value) || 0); });
+  </script>
+</body>
+</html>

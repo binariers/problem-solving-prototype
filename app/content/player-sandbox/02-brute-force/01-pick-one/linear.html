@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linear scan</title>
+<style>
+  html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+  body { display: grid; place-items: center; background: #3f1d1d; color: #fecaca; }
+  .row { display: flex; gap: 6px; }
+  .cell { width: 34px; height: 34px; display: grid; place-items: center;
+    border-radius: 6px; background: #7f1d1d; }
+  .cell.on { background: #ef4444; color: #450a0a; font-weight: 800; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="row" id="row"></div>
+    <p>O(n) scan</p>
+  </div>
+  <script>
+    const row = document.getElementById('row');
+    const cells = [3, 7, 1, 9, 4].map(v => {
+      const c = document.createElement('div');
+      c.className = 'cell'; c.textContent = v; row.appendChild(c); return c;
+    });
+    let i = 0;
+    setInterval(() => {
+      cells.forEach(c => c.classList.remove('on'));
+      cells[i].classList.add('on');
+      i = (i + 1) % cells.length;
+    }, 500);
+  </script>
+</body>
+</html>
