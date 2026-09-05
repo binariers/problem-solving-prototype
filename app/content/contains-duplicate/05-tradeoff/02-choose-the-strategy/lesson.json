@@ -1,0 +1,32 @@
+{
+  "type": "multi-choice",
+  "prompt": "Which claims about the three strategies are true? Select all that apply.",
+  "options": [
+    {
+      "id": "pairwise-space",
+      "text": "Pairwise comparison uses O(1) extra space but takes O(n^2) time in the worst case.",
+      "correct": true
+    },
+    {
+      "id": "set-tradeoff",
+      "text": "A hash set spends up to O(n) extra space to get expected O(n) time.",
+      "correct": true
+    },
+    {
+      "id": "sort-tradeoff",
+      "text": "Sorting takes O(n log n) time, and sorting in place may mutate the input.",
+      "correct": true
+    },
+    {
+      "id": "sort-linear",
+      "text": "Sorting first guarantees O(n) total time because the adjacent scan is linear.",
+      "correct": false
+    },
+    {
+      "id": "set-constant-space",
+      "text": "The hash-set strategy uses O(1) extra space regardless of the input size.",
+      "correct": false
+    }
+  ],
+  "explanation": "Pairwise comparison minimizes extra storage but can examine quadratically many pairs. A hash set uses linear extra space for expected linear time. Sorting costs O(n log n); an in-place sort may use less explicit storage than a set, but it can change the input."
+}
