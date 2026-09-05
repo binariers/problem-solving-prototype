@@ -1,0 +1,6 @@
+{
+  "type": "info",
+  "title": "Remember what you saw",
+  "body": "Keep earlier values in a set called seen. For each current value, check the set first: if the value is already in seen, its earlier occurrence proves there is a duplicate. Otherwise, add it to seen and continue.",
+  "visual": "seen-set.html"
+}
