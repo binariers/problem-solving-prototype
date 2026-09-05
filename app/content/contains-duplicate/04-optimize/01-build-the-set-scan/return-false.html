@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Return false after the scan</title>
+<style>
+  :root { color-scheme: light; --ink: #17211b; --muted: #667269; --paper: #f5f2e9; --surface: #fffdf7; --line: #d8d4c8; --teal: #176b87; --teal-soft: #dceff3; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { display: grid; place-items: center; padding: 10px; background: linear-gradient(rgba(23,33,27,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(23,33,27,.045) 1px, transparent 1px), var(--paper); background-size: 20px 20px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; }
+  main { width: min(100%, 620px); padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); box-shadow: 0 8px 22px rgba(23,33,27,.09); }
+  .eyebrow { margin: 0 0 4px; color: var(--teal); font: 700 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; }
+  h1 { margin: 0; font-size: 20px; line-height: 1.15; }
+  .scan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 14px 0 10px; }
+  .cell { display: grid; min-width: 0; height: 40px; place-items: center; border: 1px solid #a8cdd6; border-radius: 5px; background: var(--teal-soft); color: #0f536a; font: 700 14px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+  .set { margin: 0; color: var(--muted); font: 700 12px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  output { color: var(--teal); font: 800 14px/1 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+  @media (max-width: 340px) { .summary { align-items: flex-start; flex-direction: column; } }
+</style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Loop exhausted</p>
+    <h1>Every value was new when checked.</h1>
+    <div class="scan" aria-label="Unique array 4, 1, 7, 9 fully scanned"><span class="cell">4 &#10003;</span><span class="cell">1 &#10003;</span><span class="cell">7 &#10003;</span><span class="cell">9 &#10003;</span></div>
+    <div class="summary"><p class="set">seen = { 4, 1, 7, 9 }</p><output>return false</output></div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "type": "order-steps",
+  "prompt": "Arrange the steps for scanning once with a set.",
+  "steps": [
+    {
+      "id": "create-set",
+      "text": "Create an empty set named seen before the scan begins.",
+      "visual": "create-set.html"
+    },
+    {
+      "id": "check-membership",
+      "text": "For each value in nums, check whether seen already contains it.",
+      "visual": "check-membership.html"
+    },
+    {
+      "id": "return-true",
+      "text": "If seen contains the current value, return true immediately.",
+      "visual": "return-true.html"
+    },
+    {
+      "id": "insert-value",
+      "text": "Otherwise, insert the current value into seen and continue.",
+      "visual": "insert-value.html"
+    },
+    {
+      "id": "return-false",
+      "text": "After the scan finishes without finding a repeated value, return false.",
+      "visual": "return-false.html"
+    }
+  ],
+  "answer": ["create-set", "check-membership", "return-true", "insert-value", "return-false"],
+  "explanation": "The set starts empty and stores values only after they fail the membership check. Finding the current value in seen proves it appeared earlier, so the algorithm returns true at once. It returns false only after every value has been checked and inserted without a match. The scan takes expected O(n) time and up to O(n) extra space."
+}

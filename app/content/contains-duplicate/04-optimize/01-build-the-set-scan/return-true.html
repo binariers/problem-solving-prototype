@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Return true for a duplicate</title>
+<style>
+  :root { color-scheme: light; --ink: #17211b; --muted: #667269; --paper: #f5f2e9; --surface: #fffdf7; --line: #d8d4c8; --orange: #c64f13; --orange-soft: #fff0e6; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { display: grid; place-items: center; padding: 10px; background: linear-gradient(rgba(23,33,27,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(23,33,27,.045) 1px, transparent 1px), var(--paper); background-size: 20px 20px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; }
+  main { width: min(100%, 620px); padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); box-shadow: 0 8px 22px rgba(23,33,27,.09); }
+  .eyebrow { margin: 0 0 4px; color: var(--orange); font: 700 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; }
+  h1 { margin: 0; font-size: 20px; line-height: 1.15; }
+  .timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 14px 0 10px; }
+  .cell { display: grid; min-width: 0; height: 42px; place-items: center; border: 1px solid var(--line); border-radius: 5px; background: #fff; color: var(--muted); font: 700 15px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .past { border-color: #e5a783; background: var(--orange-soft); color: #a43f0e; }
+  .match { border: 2px solid var(--orange); background: var(--orange-soft); color: #a43f0e; box-shadow: 0 0 0 3px rgba(198,79,19,.13); }
+  .result { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 10px; border: 1px solid #e5a783; border-radius: 6px; background: var(--orange-soft); }
+  .proof { margin: 0; color: #7d350f; font-size: 13px; }
+  output { color: var(--orange); font: 800 14px/1 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+</style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Membership was true</p>
+    <h1>The repeated value is enough proof.</h1>
+    <div class="timeline" aria-label="Array 4, 1, 7, 4 with matching fours highlighted"><span class="cell past">4</span><span class="cell">1</span><span class="cell">7</span><span class="cell match">4</span></div>
+    <div class="result"><p class="proof">The earlier 4 is already in <strong>seen</strong>.</p><output>return true</output></div>
+  </main>
+</body>
+</html>
