@@ -1,0 +1,10 @@
+{
+  "type": "single-choice",
+  "prompt": "Given nums = [8, -2, 5, 8], what does containsDuplicate return?",
+  "visual": "array.html",
+  "options": [
+    { "id": "true", "text": "true", "visual": "occurrences.html", "correct": true },
+    { "id": "false", "text": "false", "visual": "occurrences.html", "correct": false }
+  ],
+  "explanation": "The value 8 appears twice, at indices 0 and 3, so the array contains a duplicate and the function returns true."
+}

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Array to inspect</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #17211b;
+    --muted: #667269;
+    --paper: #f5f2e9;
+    --surface: #fffdf7;
+    --line: #d8d4c8;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; min-height: 100%; }
+
+  body {
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    background:
+      linear-gradient(rgba(23, 33, 27, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(23, 33, 27, 0.045) 1px, transparent 1px),
+      var(--paper);
+    background-size: 20px 20px;
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  main {
+    width: min(100%, 620px);
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    box-shadow: 0 12px 30px rgba(23, 33, 27, 0.09);
+  }
+
+  .eyebrow {
+    margin: 0 0 6px;
+    color: var(--muted);
+    font: 700 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+    text-transform: uppercase;
+  }
+
+  h1 { margin: 0; font-size: clamp(23px, 5vw, 34px); line-height: 1.08; }
+
+  .array {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin: 28px 0 16px;
+  }
+
+  .item { display: grid; justify-items: center; gap: 8px; }
+
+  .value {
+    display: grid;
+    width: 58px;
+    height: 58px;
+    place-items: center;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    background: #ffffff;
+    font: 700 20px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .index { color: var(--muted); font: 700 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  .hint {
+    margin: 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 15px;
+    text-align: center;
+  }
+
+  @media (max-width: 430px) {
+    body { padding: 10px; }
+    main { padding: 17px; }
+    .array { gap: 6px; margin-top: 22px; }
+    .value { width: 48px; height: 48px; font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Inspect the input</p>
+    <h1>Does any value repeat?</h1>
+    <div class="array" aria-label="Array: 8, negative 2, 5, 8">
+      <div class="item"><span class="value">8</span><span class="index">index 0</span></div>
+      <div class="item"><span class="value">-2</span><span class="index">index 1</span></div>
+      <div class="item"><span class="value">5</span><span class="index">index 2</span></div>
+      <div class="item"><span class="value">8</span><span class="index">index 3</span></div>
+    </div>
+    <p class="hint">Choose the returned boolean.</p>
+  </main>
+</body>
+</html>
