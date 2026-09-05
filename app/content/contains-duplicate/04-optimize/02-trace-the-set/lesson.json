@@ -1,0 +1,26 @@
+{
+  "type": "single-choice",
+  "prompt": "For nums = [4, 1, 7, 4, 9], when does the set-based algorithm return?",
+  "visual": "start.html",
+  "options": [
+    {
+      "id": "after-index-2",
+      "text": "After inserting 7 at index 2",
+      "visual": "after-index-2.html",
+      "correct": false
+    },
+    {
+      "id": "at-index-3",
+      "text": "When checking 4 at index 3",
+      "visual": "at-index-3.html",
+      "correct": true
+    },
+    {
+      "id": "after-index-4",
+      "text": "After inserting 9 at index 4",
+      "visual": "after-index-4.html",
+      "correct": false
+    }
+  ],
+  "explanation": "Before index 3, seen contains {4, 1, 7}. The current value is 4, which is already in seen, so the algorithm returns true immediately without inserting that 4 or checking index 4."
+}

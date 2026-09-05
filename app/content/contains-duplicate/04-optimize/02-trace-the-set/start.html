@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Set trace starting state</title>
+<style>
+  :root { color-scheme: light; --ink: #17211b; --muted: #667269; --paper: #f5f2e9; --surface: #fffdf7; --line: #d8d4c8; --teal: #176b87; --teal-soft: #dceff3; --orange: #c64f13; --orange-soft: #fff0e6; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { display: grid; place-items: center; padding: 10px; background: linear-gradient(rgba(23,33,27,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(23,33,27,.045) 1px, transparent 1px), var(--paper); background-size: 20px 20px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; }
+  main { width: min(100%, 620px); padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); box-shadow: 0 8px 22px rgba(23,33,27,.09); }
+  .eyebrow { margin: 0 0 4px; color: var(--orange); font: 700 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; }
+  h1 { margin: 0; font-size: 20px; line-height: 1.15; }
+  .array { display: flex; justify-content: center; gap: 6px; margin: 14px 0 10px; }
+  .item { display: grid; justify-items: center; gap: 4px; }
+  .value { display: grid; width: 38px; height: 34px; place-items: center; border: 1px solid var(--line); border-radius: 5px; background: #fff; font: 700 14px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .index { color: var(--muted); font: 700 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .state { margin: 0; padding-top: 9px; border-top: 1px solid var(--line); color: var(--teal); text-align: center; font: 700 13px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  @media (max-width: 340px) { .array { gap: 4px; } .value { width: 34px; } }
+</style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Before the scan</p>
+    <h1>Trace each check against seen.</h1>
+    <div class="array" aria-label="Array 4, 1, 7, 4, 9">
+      <div class="item"><span class="value">4</span><span class="index">0</span></div>
+      <div class="item"><span class="value">1</span><span class="index">1</span></div>
+      <div class="item"><span class="value">7</span><span class="index">2</span></div>
+      <div class="item"><span class="value">4</span><span class="index">3</span></div>
+      <div class="item"><span class="value">9</span><span class="index">4</span></div>
+    </div>
+    <p class="state">seen = { }</p>
+  </main>
+</body>
+</html>
