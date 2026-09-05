@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Count distinct pairs</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #17211b;
+    --muted: #667269;
+    --paper: #f5f2e9;
+    --surface: #fffdf7;
+    --line: #d8d4c8;
+    --teal: #176b87;
+    --teal-soft: #dceff3;
+    --gold: #a96812;
+    --gold-soft: #f5e5c7;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; min-height: 100%; }
+
+  body {
+    display: grid;
+    place-items: center;
+    padding: 14px;
+    background:
+      linear-gradient(rgba(23, 33, 27, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(23, 33, 27, 0.045) 1px, transparent 1px),
+      var(--paper);
+    background-size: 20px 20px;
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  main {
+    width: min(100%, 660px);
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    box-shadow: 0 12px 30px rgba(23, 33, 27, 0.09);
+  }
+
+  header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .eyebrow {
+    margin: 0 0 5px;
+    color: var(--teal);
+    font: 700 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+    text-transform: uppercase;
+  }
+
+  h1 { margin: 0; font-size: clamp(22px, 5vw, 32px); line-height: 1.08; }
+
+  .total {
+    min-width: 92px;
+    padding-left: 16px;
+    border-left: 1px solid var(--line);
+    text-align: right;
+  }
+
+  output {
+    display: block;
+    color: var(--gold);
+    font: 700 30px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .total-label { color: var(--muted); font-size: 12px; }
+
+  .control {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+    margin: 18px 0 16px;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  label, .size {
+    font: 700 13px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .size { min-width: 42px; color: var(--teal); text-align: right; }
+
+  input { width: 100%; accent-color: var(--teal); cursor: pointer; }
+
+  .triangle {
+    display: grid;
+    gap: 7px;
+    min-height: 168px;
+    padding: 15px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .row-label {
+    color: var(--muted);
+    font: 700 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    text-align: right;
+  }
+
+  .pairs { display: flex; gap: 5px; min-width: 0; }
+
+  .pair {
+    display: grid;
+    flex: 1 1 0;
+    max-width: 48px;
+    min-width: 12px;
+    height: 20px;
+    place-items: center;
+    border: 1px solid #a8cdd6;
+    border-radius: 3px;
+    background: var(--teal-soft);
+    color: #0f536a;
+    font: 700 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    animation: arrive 220ms ease both;
+  }
+
+  .equation {
+    margin: 14px 0 0;
+    padding-top: 13px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .equation strong {
+    color: var(--ink);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  @keyframes arrive {
+    from { opacity: 0; transform: translateX(-5px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) { .pair { animation: none; } }
+
+  @media (max-width: 430px) {
+    body { padding: 8px; }
+    main { padding: 14px; }
+    header { align-items: start; }
+    .total { min-width: 76px; padding-left: 10px; }
+    output { font-size: 25px; }
+    .control { gap: 8px; margin: 14px 0 12px; }
+    .triangle { min-height: 158px; padding: 11px 8px; }
+    .row { grid-template-columns: 38px 1fr; gap: 7px; }
+    .pairs { gap: 3px; }
+    .pair { font-size: 0; }
+  }
+</style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <p class="eyebrow">Worst case: no early return</p>
+        <h1>Every distinct pair is checked.</h1>
+      </div>
+      <div class="total" aria-live="polite">
+        <output id="total">15</output>
+        <span class="total-label">comparisons</span>
+      </div>
+    </header>
+
+    <div class="control">
+      <label for="size">Array size</label>
+      <input id="size" type="range" min="2" max="10" value="6" />
+      <span class="size" id="size-label">n = 6</span>
+    </div>
+
+    <div class="triangle" id="triangle" aria-label="Comparison rows"></div>
+    <p class="equation" id="equation"><strong>5 + 4 + 3 + 2 + 1 = 15</strong></p>
+  </main>
+
+<script>
+  const sizeInput = document.querySelector('#size');
+  const sizeLabel = document.querySelector('#size-label');
+  const totalOutput = document.querySelector('#total');
+  const triangle = document.querySelector('#triangle');
+  const equation = document.querySelector('#equation');
+
+  function render() {
+    const size = Number(sizeInput.value);
+    const counts = [];
+    triangle.replaceChildren();
+
+    for (let left = 0; left < size - 1; left += 1) {
+      const count = size - left - 1;
+      counts.push(count);
+
+      const row = document.createElement('div');
+      row.className = 'row';
+
+      const label = document.createElement('span');
+      label.className = 'row-label';
+      label.textContent = `i = ${left}`;
+
+      const pairs = document.createElement('div');
+      pairs.className = 'pairs';
+
+      for (let right = left + 1; right < size; right += 1) {
+        const pair = document.createElement('span');
+        pair.className = 'pair';
+        pair.textContent = `${left},${right}`;
+        pair.title = `Compare indices ${left} and ${right}`;
+        pair.style.animationDelay = `${right * 18}ms`;
+        pairs.append(pair);
+      }
+
+      row.append(label, pairs);
+      triangle.append(row);
+    }
+
+    const total = size * (size - 1) / 2;
+    sizeLabel.textContent = `n = ${size}`;
+    totalOutput.value = String(total);
+    totalOutput.textContent = String(total);
+    equation.innerHTML = `<strong>${counts.join(' + ')} = ${total}</strong>`;
+  }
+
+  sizeInput.addEventListener('input', render);
+  render();
+</script>
+</body>
+</html>

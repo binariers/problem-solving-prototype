@@ -1,0 +1,12 @@
+{
+  "type": "single-choice",
+  "prompt": "In the worst case, what is the time complexity of comparing every distinct pair in an array of n values?",
+  "visual": "comparisons.html",
+  "options": [
+    { "id": "constant", "text": "O(1)", "correct": false },
+    { "id": "logarithmic", "text": "O(log n)", "correct": false },
+    { "id": "linear", "text": "O(n)", "correct": false },
+    { "id": "quadratic", "text": "O(n^2)", "correct": true }
+  ],
+  "explanation": "With no duplicate found early, the algorithm checks (n - 1) + (n - 2) + ... + 1 = n(n - 1) / 2 pairs. The leading term grows with n^2, so the worst-case time complexity is O(n^2)."
+}
