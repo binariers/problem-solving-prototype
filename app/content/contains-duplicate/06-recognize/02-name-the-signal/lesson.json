@@ -1,0 +1,27 @@
+{
+  "type": "single-choice",
+  "prompt": "Which requirement is the clearest signal for a set-backed seen-before scan?",
+  "options": [
+    {
+      "id": "previously-encountered",
+      "text": "Detect whether the current value was encountered earlier.",
+      "correct": true
+    },
+    {
+      "id": "exact-frequency",
+      "text": "Find the exact number of times each value occurs.",
+      "correct": false
+    },
+    {
+      "id": "sorted-position",
+      "text": "Determine each value's position in sorted order.",
+      "correct": false
+    },
+    {
+      "id": "all-pairs",
+      "text": "Compare every possible pair while using constant extra space.",
+      "correct": false
+    }
+  ],
+  "explanation": "When the decision depends on whether the current value appeared earlier, keep earlier values in a set and test membership as you scan. Exact frequencies need counts, sorted positions need ordering, and comparing every pair is the brute-force approach."
+}
