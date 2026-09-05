@@ -1,0 +1,6 @@
+{
+  "type": "info",
+  "title": "What counts as a duplicate?",
+  "body": "Return true when any value appears more than once in the array. The matching values do not need to be next to each other. Empty arrays, single-value arrays, and arrays whose values are all different return false.",
+  "visual": "overview.html"
+}

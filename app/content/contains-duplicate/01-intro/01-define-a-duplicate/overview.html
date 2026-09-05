@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Duplicate examples</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #17211b;
+    --muted: #667269;
+    --paper: #f5f2e9;
+    --surface: #fffdf7;
+    --line: #d8d4c8;
+    --accent: #087f5b;
+    --repeat: #e8590c;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; min-height: 100%; }
+
+  body {
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    background:
+      linear-gradient(rgba(23, 33, 27, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(23, 33, 27, 0.045) 1px, transparent 1px),
+      var(--paper);
+    background-size: 20px 20px;
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  main {
+    width: min(100%, 620px);
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    box-shadow: 0 12px 30px rgba(23, 33, 27, 0.09);
+  }
+
+  .eyebrow {
+    margin: 0 0 6px;
+    color: var(--muted);
+    font: 700 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+    text-transform: uppercase;
+  }
+
+  h1 { margin: 0; font-size: clamp(23px, 5vw, 34px); line-height: 1.08; }
+
+  .array {
+    display: flex;
+    min-height: 76px;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin: 24px 0 18px;
+  }
+
+  .value {
+    display: grid;
+    width: 52px;
+    height: 52px;
+    place-items: center;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    background: #ffffff;
+    font: 700 21px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .value.repeat {
+    border-color: var(--repeat);
+    background: #fff0e6;
+    color: #b23c00;
+    box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.14);
+  }
+
+  .empty {
+    color: var(--muted);
+    font: 700 28px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .result {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+
+  .result strong { color: var(--accent); font: 800 20px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .result strong.true { color: var(--repeat); }
+  .result span { color: var(--muted); font-size: 15px; text-align: right; }
+
+  nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-top: 18px; }
+
+  button {
+    min-height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #ffffff;
+    color: var(--ink);
+    cursor: pointer;
+    font: 700 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  button[aria-pressed="true"] { border-color: var(--accent); background: #dff5ec; color: #075b43; }
+  button:focus-visible { outline: 3px solid rgba(8, 127, 91, 0.3); outline-offset: 2px; }
+
+  @media (max-width: 430px) {
+    body { padding: 10px; }
+    main { padding: 17px; }
+    .value { width: 43px; height: 43px; font-size: 18px; }
+    .array { gap: 6px; margin-block: 18px 14px; }
+    .result { align-items: flex-start; flex-direction: column; gap: 4px; }
+    .result span { text-align: left; }
+    nav { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Four boundary cases</p>
+    <h1 id="heading">Repeated values</h1>
+    <div class="array" id="array" aria-live="polite"></div>
+    <div class="result">
+      <strong id="result"></strong>
+      <span id="reason"></span>
+    </div>
+    <nav aria-label="Choose an example">
+      <button type="button" data-example="repeated" aria-pressed="true">Repeated</button>
+      <button type="button" data-example="unique" aria-pressed="false">Unique</button>
+      <button type="button" data-example="empty" aria-pressed="false">Empty</button>
+      <button type="button" data-example="single" aria-pressed="false">Single</button>
+    </nav>
+  </main>
+
+  <script>
+    const examples = {
+      repeated: { heading: 'Repeated values', values: [4, 1, 4, 7], repeated: [0, 2], result: 'true', reason: '4 appears more than once' },
+      unique: { heading: 'All values are unique', values: [4, 1, 9, 7], repeated: [], result: 'false', reason: 'Every value appears once' },
+      empty: { heading: 'No values', values: [], repeated: [], result: 'false', reason: 'Nothing can repeat' },
+      single: { heading: 'One value', values: [4], repeated: [], result: 'false', reason: 'One occurrence is not a duplicate' }
+    };
+
+    const array = document.getElementById('array');
+    const heading = document.getElementById('heading');
+    const result = document.getElementById('result');
+    const reason = document.getElementById('reason');
+    const buttons = [...document.querySelectorAll('button[data-example]')];
+
+    function showExample(name) {
+      const example = examples[name];
+      heading.textContent = example.heading;
+      array.replaceChildren();
+
+      if (example.values.length === 0) {
+        const empty = document.createElement('span');
+        empty.className = 'empty';
+        empty.textContent = '[]';
+        array.append(empty);
+      } else {
+        example.values.forEach((value, index) => {
+          const cell = document.createElement('span');
+          cell.className = example.repeated.includes(index) ? 'value repeat' : 'value';
+          cell.textContent = value;
+          array.append(cell);
+        });
+      }
+
+      result.textContent = example.result;
+      result.className = example.result === 'true' ? 'true' : '';
+      reason.textContent = example.reason;
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.example === name)));
+    }
+
+    buttons.forEach((button) => button.addEventListener('click', () => showExample(button.dataset.example)));
+    showExample('repeated');
+  </script>
+</body>
+</html>
