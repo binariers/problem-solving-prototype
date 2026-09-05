@@ -1,0 +1,28 @@
+{
+  "type": "order-steps",
+  "prompt": "Arrange the constant-space steps that compare every pair.",
+  "steps": [
+    {
+      "id": "choose-left",
+      "text": "For each index i from 0 through n - 2, choose nums[i] as the left value.",
+      "visual": "choose-left.html"
+    },
+    {
+      "id": "scan-right",
+      "text": "For each index j from i + 1 through n - 1, compare nums[i] with nums[j].",
+      "visual": "scan-right.html"
+    },
+    {
+      "id": "return-true",
+      "text": "If nums[i] equals nums[j], return true immediately.",
+      "visual": "return-true.html"
+    },
+    {
+      "id": "return-false",
+      "text": "After both loops finish without a match, return false.",
+      "visual": "return-false.html"
+    }
+  ],
+  "answer": ["choose-left", "scan-right", "return-true", "return-false"],
+  "explanation": "The inner loop starts after i, so every distinct pair is compared once. A match returns true early; false is safe only after every pair has been checked. The algorithm uses only the two index variables, so its extra space is O(1)."
+}

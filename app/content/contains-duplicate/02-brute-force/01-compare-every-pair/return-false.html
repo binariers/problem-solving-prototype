@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Return after every pair differs</title>
+<style>
+  :root { color-scheme: light; --ink: #17211b; --muted: #667269; --paper: #f5f2e9; --surface: #fffdf7; --line: #d8d4c8; --done: #5e6372; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { display: grid; place-items: center; padding: 16px; background: linear-gradient(rgba(23,33,27,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(23,33,27,.045) 1px, transparent 1px), var(--paper); background-size: 20px 20px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; }
+  main { width: min(100%, 620px); padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); box-shadow: 0 12px 30px rgba(23,33,27,.09); }
+  .state { margin: 0 0 6px; color: var(--done); font: 700 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; }
+  h1 { margin: 0; font-size: clamp(22px, 5vw, 32px); line-height: 1.1; }
+  .array { display: flex; justify-content: center; gap: 8px; margin: 22px 0 13px; }
+  .item { display: grid; justify-items: center; gap: 7px; }
+  .value { display: grid; width: 56px; height: 56px; place-items: center; border: 2px solid var(--done); border-radius: 6px; background: #f2f1ed; color: var(--done); font: 700 20px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .index { color: var(--muted); font: 700 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .pairs { display: flex; justify-content: center; gap: 7px; margin-bottom: 15px; }
+  .pairs span { padding: 5px 7px; border: 1px solid var(--line); border-radius: 4px; background: #f2f1ed; color: var(--done); font: 700 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace; text-decoration: line-through; }
+  .trace { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0; padding-top: 15px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; }
+  .result { padding: 6px 9px; border-radius: 4px; background: #ececf0; color: #474b57; font: 800 13px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  @media (max-width: 430px) { body { padding: 9px; } main { padding: 16px; } .value { width: 48px; height: 48px; font-size: 18px; } .trace { flex-wrap: wrap; } }
+</style>
+</head>
+<body>
+  <main>
+    <p class="state">Loops exhausted</p>
+    <h1>No unchecked pair remains.</h1>
+    <div class="array" aria-label="Unique array 4, 1, 7 after all comparisons">
+      <div class="item"><span class="value">4</span><span class="index">0</span></div>
+      <div class="item"><span class="value">1</span><span class="index">1</span></div>
+      <div class="item"><span class="value">7</span><span class="index">2</span></div>
+    </div>
+    <div class="pairs" aria-label="Completed pair trace"><span>(0, 1)</span><span>(0, 2)</span><span>(1, 2)</span></div>
+    <p class="trace">Every compared pair differed.<span class="result">return false</span></p>
+  </main>
+</body>
+</html>
