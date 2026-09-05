@@ -1,0 +1,18 @@
+{
+  "id": "contains-duplicate",
+  "title": "Contains Duplicate",
+  "lessons": [
+    { "id": "define-a-duplicate", "stage": "Intro", "path": "01-intro/01-define-a-duplicate" },
+    { "id": "predict-the-result", "stage": "Intro", "path": "01-intro/02-predict-the-result" },
+    { "id": "compare-every-pair", "stage": "BruteForce", "path": "02-brute-force/01-compare-every-pair" },
+    { "id": "count-the-comparisons", "stage": "BruteForce", "path": "02-brute-force/02-count-the-comparisons" },
+    { "id": "remember-what-you-saw", "stage": "Insight", "path": "03-insight/01-remember-what-you-saw" },
+    { "id": "state-the-invariant", "stage": "Insight", "path": "03-insight/02-state-the-invariant" },
+    { "id": "build-the-set-scan", "stage": "Optimize", "path": "04-optimize/01-build-the-set-scan" },
+    { "id": "trace-the-set", "stage": "Optimize", "path": "04-optimize/02-trace-the-set" },
+    { "id": "sort-and-scan", "stage": "Tradeoff", "path": "05-tradeoff/01-sort-and-scan" },
+    { "id": "choose-the-strategy", "stage": "Tradeoff", "path": "05-tradeoff/02-choose-the-strategy" },
+    { "id": "spot-seen-before", "stage": "Recognize", "path": "06-recognize/01-spot-seen-before" },
+    { "id": "name-the-signal", "stage": "Recognize", "path": "06-recognize/02-name-the-signal" }
+  ]
+}
