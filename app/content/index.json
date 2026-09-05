@@ -4,8 +4,6 @@
       "id": "arrays-hashing",
       "title": "Arrays & Hashing",
       "units": [
-        { "id": "player-sandbox", "title": "Player Sandbox", "path": "player-sandbox", "available": true },
-        { "id": "two-sum", "title": "Two Sum", "path": "two-sum", "available": false },
         { "id": "contains-duplicate", "title": "Contains Duplicate", "path": "contains-duplicate", "available": true }
       ]
     }
