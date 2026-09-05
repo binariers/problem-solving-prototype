@@ -1,0 +1,6 @@
+{
+  "type": "info",
+  "title": "Sort, then scan neighbors",
+  "body": "Pairwise comparison checks every possible pair because equal values may be far apart. Sorting first groups equal values together, so a single scan of adjacent pairs is enough. The sort costs O(n log n), and an in-place sort can use less explicit storage than a set but mutates the input.",
+  "visual": "before-after.html"
+}

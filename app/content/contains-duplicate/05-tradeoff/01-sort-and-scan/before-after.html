@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pairwise comparison versus sorting and scanning</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #17211b;
+    --muted: #667269;
+    --paper: #f5f2e9;
+    --surface: #fffdf7;
+    --line: #d8d4c8;
+    --blue: #176b87;
+    --blue-soft: #dceff3;
+    --orange: #c64f13;
+    --orange-soft: #fff0e6;
+    --green: #087f5b;
+    --green-soft: #dff5ec;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; min-height: 100%; }
+
+  body {
+    display: grid;
+    place-items: center;
+    padding: 7px;
+    background:
+      linear-gradient(rgba(23, 33, 27, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(23, 33, 27, 0.045) 1px, transparent 1px),
+      var(--paper);
+    background-size: 20px 20px;
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  main {
+    width: min(100%, 620px);
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    box-shadow: 0 8px 22px rgba(23, 33, 27, 0.09);
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .eyebrow {
+    margin: 0 0 1px;
+    color: var(--blue);
+    font: 700 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+    text-transform: uppercase;
+  }
+
+  h1 { margin: 0; font-size: 16px; line-height: 1.1; }
+
+  button {
+    min-width: 88px;
+    height: 30px;
+    padding: 0 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer;
+    font: 700 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  button:focus-visible { outline: 3px solid rgba(23, 107, 135, 0.28); outline-offset: 2px; }
+
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  section {
+    min-width: 0;
+    padding: 7px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  section.after { border-color: #9dcdbd; background: #fbfffd; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 5px;
+  }
+
+  h2 {
+    margin: 0;
+    font: 700 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+    text-transform: uppercase;
+  }
+
+  .count { color: var(--muted); font-size: 10px; white-space: nowrap; }
+  .after .count { color: var(--green); font-weight: 700; }
+
+  .array {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(22px, 30px));
+    justify-content: center;
+    gap: 4px;
+    margin: 7px 0 6px;
+  }
+
+  .value {
+    display: grid;
+    height: 28px;
+    place-items: center;
+    border: 2px solid var(--line);
+    border-radius: 5px;
+    background: #fff;
+    color: var(--muted);
+    font: 700 13px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .value.active { border-color: var(--blue); background: var(--blue-soft); color: #0f536a; }
+  .value.match { border-color: var(--orange); background: var(--orange-soft); color: #a43f0e; }
+
+  .trace {
+    display: flex;
+    min-height: 18px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    padding-top: 5px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font: 700 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .pair { color: var(--ink); white-space: nowrap; }
+  .pair.found { color: var(--orange); }
+  .after .pair.found { color: var(--green); }
+
+  @media (max-width: 350px) {
+    body { padding: 5px; }
+    main { padding-inline: 7px; }
+    h1 { font-size: 14px; }
+    button { min-width: 76px; padding-inline: 5px; }
+    .comparison { gap: 5px; }
+    section { padding-inline: 5px; }
+    .array { grid-template-columns: repeat(5, minmax(20px, 26px)); gap: 3px; }
+    .count { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <p class="eyebrow">Same comparison idea, less searching</p>
+        <h1>Sorting makes duplicates neighbors</h1>
+      </div>
+      <button id="next" type="button">Next check</button>
+    </header>
+
+    <div class="comparison">
+      <section aria-labelledby="before-title">
+        <div class="section-head">
+          <h2 id="before-title">Before: unsorted</h2>
+          <span class="count">10 pairs</span>
+        </div>
+        <div class="array" id="before-array" aria-label="Unsorted array"></div>
+        <div class="trace">
+          <span id="before-step">Pair 1 of 10</span>
+          <span class="pair" id="before-pair" aria-live="polite"></span>
+        </div>
+      </section>
+
+      <section class="after" aria-labelledby="after-title">
+        <div class="section-head">
+          <h2 id="after-title">After: sorted</h2>
+          <span class="count">4 neighbors</span>
+        </div>
+        <div class="array" id="after-array" aria-label="Sorted array"></div>
+        <div class="trace">
+          <span id="after-step">Check 1 of 4</span>
+          <span class="pair" id="after-pair" aria-live="polite"></span>
+        </div>
+      </section>
+    </div>
+  </main>
+
+<script>
+  const original = [4, 1, 7, 4, 2];
+  const sorted = [...original].sort((left, right) => left - right);
+  const allPairs = [];
+
+  for (let left = 0; left < original.length; left += 1) {
+    for (let right = left + 1; right < original.length; right += 1) {
+      allPairs.push([left, right]);
+    }
+  }
+
+  const adjacentPairs = sorted.slice(0, -1).map((_, index) => [index, index + 1]);
+  const duplicateStep = adjacentPairs.findIndex(([left, right]) => sorted[left] === sorted[right]);
+  let step = 0;
+
+  const beforeArray = document.querySelector('#before-array');
+  const afterArray = document.querySelector('#after-array');
+  const beforeStep = document.querySelector('#before-step');
+  const afterStep = document.querySelector('#after-step');
+  const beforePair = document.querySelector('#before-pair');
+  const afterPair = document.querySelector('#after-pair');
+  const next = document.querySelector('#next');
+
+  function drawArray(container, values, pair) {
+    container.replaceChildren();
+    const equal = values[pair[0]] === values[pair[1]];
+
+    values.forEach((value, index) => {
+      const cell = document.createElement('span');
+      const selected = pair.includes(index);
+      cell.className = selected ? `value ${equal ? 'match' : 'active'}` : 'value';
+      cell.textContent = value;
+      container.append(cell);
+    });
+  }
+
+  function describe(values, pair, output) {
+    const equal = values[pair[0]] === values[pair[1]];
+    output.textContent = `${values[pair[0]]} ${equal ? '=' : '\u2260'} ${values[pair[1]]}`;
+    output.className = equal ? 'pair found' : 'pair';
+  }
+
+  function render() {
+    const beforeIndex = step % allPairs.length;
+    const afterIndex = step % adjacentPairs.length;
+    const before = allPairs[beforeIndex];
+    const after = adjacentPairs[afterIndex];
+
+    drawArray(beforeArray, original, before);
+    drawArray(afterArray, sorted, after);
+    describe(original, before, beforePair);
+    describe(sorted, after, afterPair);
+    beforeStep.textContent = `Pair ${beforeIndex + 1} of ${allPairs.length}`;
+    afterStep.textContent = `Check ${afterIndex + 1} of ${adjacentPairs.length}`;
+    next.textContent = step === duplicateStep ? 'Reset trace' : 'Next check';
+  }
+
+  next.addEventListener('click', () => {
+    step = step === duplicateStep ? 0 : step + 1;
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>
