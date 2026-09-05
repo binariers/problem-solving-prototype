@@ -1,0 +1,32 @@
+{
+  "type": "multi-choice",
+  "prompt": "Which tasks use the same seen-before membership pattern? Select all that apply.",
+  "options": [
+    {
+      "id": "reused-username",
+      "text": "Reject a username if it already appeared earlier in a signup stream.",
+      "correct": true
+    },
+    {
+      "id": "visited-page",
+      "text": "Detect whether the current page URL was visited earlier in this session.",
+      "correct": true
+    },
+    {
+      "id": "duplicate-transaction",
+      "text": "Flag a transaction ID when the same ID has already been processed.",
+      "correct": true
+    },
+    {
+      "id": "word-frequencies",
+      "text": "Count exactly how many times every word occurs in a document.",
+      "correct": false
+    },
+    {
+      "id": "third-smallest",
+      "text": "Find the third-smallest value in an unsorted array.",
+      "correct": false
+    }
+  ],
+  "explanation": "The username, page, and transaction tasks only need to know whether the current item is already in a set of earlier items. Exact frequency counting needs counts, while finding the third-smallest value is an ordering problem."
+}
