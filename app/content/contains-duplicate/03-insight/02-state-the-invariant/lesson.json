@@ -1,0 +1,11 @@
+{
+  "type": "single-choice",
+  "prompt": "Before checking whether nums[i] is in seen, what must seen contain?",
+  "options": [
+    { "id": "earlier-values", "text": "Exactly the values at indices before i", "correct": true },
+    { "id": "through-current", "text": "Exactly the values at indices up to and including i", "correct": false },
+    { "id": "all-values", "text": "Every value in nums, including values after i", "correct": false },
+    { "id": "known-duplicates", "text": "Only values already known to occur more than once", "correct": false }
+  ],
+  "explanation": "Before the membership check at index i, seen contains exactly the values from earlier indices. The membership check happens before insertion: if nums[i] is already in seen, it matches an earlier value; otherwise, add it, preserving the invariant for the next index."
+}
